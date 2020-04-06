@@ -1,6 +1,6 @@
-export const debounce = (fn) => {
+export const debounce = (...args: any) => {
   let curr = Promise.resolve()
-  return () => curr = curr.then((_) => fn.apply(this, Array.prototype.slice.call(arguments)))
+  return () => curr = curr.then((_) => this.apply(this, Array.prototype.slice.call(args)))
 }
 
 export const randomUint = () =>

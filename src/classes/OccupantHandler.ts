@@ -8,10 +8,10 @@ export default class OccupantHandler {
   occupants = {}
   leftOccupants = new Set()
   blockedClients = new Map()
-  onOccupantsChanged
-  onOccupantConnected
-  onOccupantDisconnected
-  onOccupantMessage
+  onOccupantsChanged: (arg0: {}) => void
+  onOccupantConnected: (arg0: any) => void
+  onOccupantDisconnected: (arg0: any) => void
+  onOccupantMessage: (arg0: any, arg1: any, arg2: any, arg3: any) => void
 
   _iOSHackDelayedInitialPeer: boolean
 
@@ -21,15 +21,15 @@ export default class OccupantHandler {
     this.application = application
   }
 
-  setRoomOccupantListener = (occupantListener) => (this.onOccupantsChanged = occupantListener)
+  setRoomOccupantListener = (occupantListener: any) => (this.onOccupantsChanged = occupantListener)
 
-  setDataChannelListeners(openListener, closedListener, messageListener) {
+  setDataChannelListeners(openListener: any, closedListener: any, messageListener: any) {
     this.onOccupantConnected = openListener
     this.onOccupantDisconnected = closedListener
     this.onOccupantMessage = messageListener
   }
 
-  kick = (clientId, permsToken) =>
+  kick = (clientId: any, permsToken: any) =>
     this.application.connectionHandler.publisher.handle
       .sendMessage({
         kind: 'kick',
@@ -41,19 +41,19 @@ export default class OccupantHandler {
         document.body.dispatchEvent(new CustomEvent('kicked', { detail: { clientId: clientId } }))
       })
 
-  block = (clientId) =>
+  block = (clientId: any) =>
     this.application.connectionHandler.publisher.handle.sendMessage({ kind: 'block', whom: clientId }).then(() => {
       this.blockedClients.set(clientId, true)
       document.body.dispatchEvent(new CustomEvent('blocked', { detail: { clientId: clientId } }))
     })
 
-  unblock = (clientId) =>
+  unblock = (clientId: any) =>
     this.application.connectionHandler.publisher.handle.sendMessage({ kind: 'unblock', whom: clientId }).then(() => {
       this.blockedClients.delete(clientId)
       document.body.dispatchEvent(new CustomEvent('unblocked', { detail: { clientId: clientId } }))
     })
 
-  async addOccupant(occupantId) {
+  async addOccupant(occupantId: any) {
     if (this.occupants[occupantId]) this.removeOccupant(occupantId)
 
     this.leftOccupants.delete(occupantId)
@@ -77,7 +77,7 @@ export default class OccupantHandler {
     for (const occupantId of Object.getOwnPropertyNames(this.occupants)) this.removeOccupant(occupantId)
   }
 
-  removeOccupant(occupantId) {
+  removeOccupant(occupantId: any) {
     this.leftOccupants.add(occupantId)
 
     if (!this.occupants[occupantId]) return
@@ -101,7 +101,7 @@ export default class OccupantHandler {
     this.onOccupantsChanged(this.occupants)
   }
 
-  async createSubscriber(occupantId) {
+  async createSubscriber(occupantId: any) {
     if (this.leftOccupants.has(occupantId))
       return console.warn(`${occupantId}: cancelled occupant connection, occupant left before subscription negotation.`)
 

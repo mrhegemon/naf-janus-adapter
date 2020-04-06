@@ -1,4 +1,4 @@
-import { debounce, debug, error } from '../util'
+import { debug } from '../util'
 import Application from './Application'
 
 export default class InputHandler {
